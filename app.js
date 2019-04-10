@@ -11,8 +11,9 @@ GAME RULES:
 
 var scores, roundScore, activePlayer;
 var turnRolls = [];
+var winningScore;
 
-
+	
 
 
 newGame();
@@ -49,8 +50,17 @@ document.querySelector('.btn-hold').addEventListener('click', function() {
 	
 	scores[activePlayer] += roundScore;
 
+	var input = document.querySelector(".winningScore").value;
+
+	if(input) {
+		winningScore = input;
+	} else {
+		winningScore = 100;
+	}
+
+
 	document.querySelector('#score-' + activePlayer).textContent = scores[activePlayer];
-      if (scores[activePlayer] >= 100) {
+      if (scores[activePlayer] >= winningScore) {
       	document.querySelector('#name-' + activePlayer).textContent = 'Winner!';
       	hideDice();
       	hidePlayBtns();
