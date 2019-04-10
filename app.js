@@ -10,7 +10,7 @@ GAME RULES:
 */
 
 var scores, roundScore, activePlayer;
-
+var turnRolls = [];
 
 
 
@@ -21,15 +21,26 @@ newGame();
 document.querySelector('.btn-roll').addEventListener('click', function() {
 	
 	var dice = Math.floor(Math.random() * 6) + 1;
+	turnRolls.push(dice);
 	
+	var lastRoll = turnRolls[turnRolls.length - 2];
+
 	var diceDOM = document.querySelector('.dice');
 	diceDOM.style.display = 'block';
 	diceDOM.src = 'dice-' + dice + '.png';
+	
 
-	if (dice !== 1) {
+	if (lastRoll === 6 && dice === lastRoll) {
+		scores[activePlayer] = 0;
+		document.querySelector('#score-' + activePlayer).textContent = '0';
+		turnRolls = [];
+		nextPlayer();
+
+	} else if (dice !== 1) {
 		roundScore += dice;
 		document.querySelector('#current-' + activePlayer).textContent = roundScore;
 	} else { 
+		turnRolls = [];
 		nextPlayer();
 	}
 });
@@ -39,7 +50,7 @@ document.querySelector('.btn-hold').addEventListener('click', function() {
 	scores[activePlayer] += roundScore;
 
 	document.querySelector('#score-' + activePlayer).textContent = scores[activePlayer];
-      if (scores[activePlayer] >= 10) {
+      if (scores[activePlayer] >= 100) {
       	document.querySelector('#name-' + activePlayer).textContent = 'Winner!';
       	hideDice();
       	hidePlayBtns();
@@ -47,6 +58,7 @@ document.querySelector('.btn-hold').addEventListener('click', function() {
       	document.querySelector('.player-' + activePlayer + '-panel').classList.remove('active');
 
       } else {
+      turnRolls = [];
       nextPlayer();
   }
 });
@@ -77,6 +89,8 @@ function newGame() {
 	document.querySelector('.btn-hold').style.display = 'block';
 	document.querySelector('.player-0-panel').classList.remove('winner');
 	document.querySelector('.player-1-panel').classList.remove('winner');
+	document.querySelector('.player-0-panel').classList.remove('active');
+	document.querySelector('.player-1-panel').classList.remove('active');
 	document.querySelector('.player-0-panel').classList.add('active');
 	
 	document.getElementById('name-0').textContent = 'Player 1';
